@@ -1,17 +1,7 @@
+import SignUpDialog from "@/components/ui/auth/SignUpDialog";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     id: "",
     email: "",
@@ -269,24 +259,7 @@ const SignUpForm = () => {
         </form>
       </div>
 
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>회원가입 완료</DialogTitle>
-            <DialogDescription>
-              회원가입이 서옹적으로 완료되었습니다. 로그인 페이지로 돌아갑니다.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              onClick={() => navigate("/login")}
-              className="bg-[#FF7976] hover:bg-[#E86E6B]"
-            >
-              확인
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <SignUpDialog open={showDialog} onOpenChange={setShowDialog} />
     </div>
   );
 };
