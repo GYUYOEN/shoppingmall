@@ -8,6 +8,8 @@ const Login = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -16,8 +18,34 @@ const Login = () => {
     }));
   };
 
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+  };
+
+  const validateField = (name, value) => {
+    let error = "";
+    switch (name) {
+      case "id":
+        if (!value) {
+          error = "아이디를 입력해주세요";
+        }
+        break;
+      case "password":
+        if (!value) {
+          error = "비밀번호를 입력해주세요";
+        }
+        break;
+    }
+    return error;
   };
 
   return (
@@ -38,9 +66,13 @@ const Login = () => {
               name="id"
               value={formData.id}
               onChange={handleChange}
+              onBlur={handleBlur}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF7976] focus:border-[#FF7976]"
               required
             />
+            {errors.id && (
+              <p className="text-red-500 text-sm mt-1">{errors.id}</p>
+            )}
           </div>
           <div>
             <label
@@ -55,9 +87,13 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onBlur={handleBlur}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF7976] focus:border-[#FF7976]"
               required
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
           <div className="flex items-center justify-between">
             <input
