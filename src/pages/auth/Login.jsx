@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { InputForm } from "@/components/common/InputForm";
+import { useError } from "@/hooks/useError";
+
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -8,7 +11,7 @@ const Login = () => {
     password: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const { errors, handleError } = useError();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,34 +21,8 @@ const Login = () => {
     }));
   };
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    const error = validateField(name, value);
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
-
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "id":
-        if (!value) {
-          error = "아이디를 입력해주세요";
-        }
-        break;
-      case "password":
-        if (!value) {
-          error = "비밀번호를 입력해주세요";
-        }
-        break;
-    }
-    return error;
   };
 
   return (
@@ -53,48 +30,22 @@ const Login = () => {
       <div className="max-w-md w-full p-6 rounded-lg ">
         <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="id"
-              className="block text-sm font-medium text-gray-700"
-            >
-              아이디
-            </label>
-            <input
-              type="id"
-              id="id"
-              name="id"
-              value={formData.id}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF7976] focus:border-[#FF7976]"
-              required
-            />
-            {errors.id && (
-              <p className="text-red-500 text-sm mt-1">{errors.id}</p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              비밀번호
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#FF7976] focus:border-[#FF7976]"
-              required
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
+          <InputForm
+            label="아이디"
+            name="id"
+            value={formData.id}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.id}
+          />
+          <InputForm
+            label="비밀번호"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.password}
+          />
           <div className="flex items-center justify-between">
             <input
               type="checkbox"

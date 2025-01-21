@@ -1,5 +1,8 @@
-import SignUpDialog from "@/components/ui/auth/SignUpDialog";
+import SignUpDialog from "@/components/auth/SignUpDialog";
 import { useState } from "react";
+
+import { InputForm } from "@/components/common/InputForm";
+import { useError } from "@/hooks/useError";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -12,8 +15,8 @@ const SignUpForm = () => {
     gender: "",
   });
 
-  const [errors, setErrors] = useState({});
   const [showDialog, setShowDialog] = useState(false);
+  const { errors, handleError } = useError(formData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,84 +35,6 @@ const SignUpForm = () => {
     }
   };
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    const error = validateField(name, value);
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const validateField = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "id":
-        if (!value) {
-          error = "아이디를 입력해주세요.";
-        } else if (value.length < 4) {
-          error = "아이디는 4자 이상이어야 합니다.";
-        }
-        break;
-
-      case "email":
-        // eslint-disable-next-line no-case-declarations
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!value) {
-          error = "이메일을 입력해주세요.";
-        } else if (!emailRegex.test(value)) {
-          error = "올바른 이메일 형식이 아닙니다.";
-        }
-        break;
-
-      case "name":
-        if (!value) {
-          error = "이름을 입력해주세요.";
-        }
-        break;
-
-      case "password":
-        if (!value) {
-          error = "비밀번호를 입력해주세요.";
-        } else if (value.length < 8) {
-          error = "비밀번호는 8자 이상이어야 합니다.";
-        } else if (!/[0-9]/.test(value)) {
-          error = "비밀번호에 숫자가 포함되어야 합니다.";
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-          error = "비밀번호에 특수문자가 포함되어야 합니다.";
-        }
-        break;
-
-      case "passwordConfirm":
-        if (!value) {
-          error = "비밀번호 확인을 입력해주세요.";
-        } else if (value !== formData.password) {
-          error = "비밀번호가 일치하지 않습니다.";
-        }
-        break;
-
-      case "phone":
-        // eslint-disable-next-line no-case-declarations
-        const phoneRegex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$/;
-        if (!value) {
-          error = "전화번호를 입력해주세요.";
-        } else if (!phoneRegex.test(value)) {
-          error = "올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)";
-        }
-        break;
-
-      case "gender":
-        if (!value) {
-          error = "성별을 선택해주세요.";
-        }
-        break;
-
-      default:
-        break;
-    }
-    return error;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowDialog(true);
@@ -121,101 +46,71 @@ const SignUpForm = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">회원가입</h2>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">아이디</label>
-            <input
-              type="text"
-              name="id"
-              value={formData.id}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-            />
-            {errors.id && (
-              <p className="text-red-500 text-sm mt-1">{errors.id}</p>
-            )}
-          </div>
+          <InputForm
+            label="아이디"
+            name="id"
+            value={formData.id}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.id}
+            className="mb-4"
+          />
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">이메일</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
+          <InputForm
+            label="이메일"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.email}
+            className="mb-4"
+          />
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">이름</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-            )}
-          </div>
+          <InputForm
+            label="이름"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.name}
+            className="mb-4"
+          />
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">비밀번호</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
-          </div>
+          <InputForm
+            label="비밀번호"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.password}
+            className="mb-4"
+          />
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">
-              비밀번호 확인
-            </label>
-            <input
-              type="password"
-              name="passwordConfirm"
-              value={formData.passwordConfirm}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-            />
-            {errors.passwordConfirm && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.passwordConfirm}
-              </p>
-            )}
-          </div>
+          <InputForm
+            label="비밀번호 확인"
+            name="passwordConfirm"
+            type="password"
+            value={formData.passwordConfirm}
+            onChange={handleChange}
+            onBlur={handleError}
+            error={errors.passwordConfirm}
+            className="mb-4"
+          />
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium">전화번호</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              maxLength={11}
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-              placeholder="01012345678"
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-            )}
-          </div>
+          <InputForm
+            label="전화번호"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            onBlur={handleError}
+            maxLength={11}
+            placeholder="01012345678"
+            error={errors.phone}
+            className="mb-4"
+          />
 
           <div className="mb-4">
             <label className="block mb-2 text-sm font-medium">성별</label>
@@ -227,7 +122,7 @@ const SignUpForm = () => {
                   value="male"
                   checked={formData.gender === "male"}
                   onChange={handleChange}
-                  onBlur={handleBlur}
+                  onBlur={handleError}
                   className="mr-2"
                 />
                 남성
@@ -239,7 +134,7 @@ const SignUpForm = () => {
                   value="female"
                   checked={formData.gender === "female"}
                   onChange={handleChange}
-                  onBlur={handleBlur}
+                  onBlur={handleError}
                   className="mr-2"
                 />
                 여성

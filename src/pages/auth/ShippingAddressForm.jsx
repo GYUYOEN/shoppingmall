@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 
+import { InputForm } from "@/components/common/InputForm";
+import { useError } from "@/hooks/useError";
+
 const ShippingAddressForm = () => {
   const [addresses, setAddresses] = useState([
     {
@@ -28,7 +31,7 @@ const ShippingAddressForm = () => {
     detailAddress: "",
     isDefault: false,
   });
-  const [errors, setErrors] = useState({});
+  const { errors, handleError, setErrors, validateField } = useError();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -67,35 +70,6 @@ const ShippingAddressForm = () => {
     }));
   };
 
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    const error = validateForm(name, value);
-    setErrors((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const validateForm = (name, value) => {
-    let error = "";
-    switch (name) {
-      case "address":
-        if (!value) {
-          error = "우편번호와 주소를 입력해주세요";
-        }
-        break;
-      case "detailAddress":
-        if (!value) {
-          error = "상세주소를 입력해주세요";
-        }
-        break;
-      default:
-        break;
-    }
-
-    return error;
-  };
-
   const handleDelete = (addressId) => {
     const filteredAddresses = addresses.filter((addr) => addr.id !== addressId);
     setAddresses(filteredAddresses);
@@ -114,8 +88,8 @@ const ShippingAddressForm = () => {
     e.preventDefault();
 
     const formErrors = {
-      address: validateForm("address", addressData.address),
-      detailAddress: validateForm("detailAddress", addressData.detailAddress),
+      address: validateField("address", addressData.address),
+      detailAddress: validateField("detailAddress", addressData.detailAddress),
     };
 
     if (Object.values(formErrors).some((error) => error)) {
@@ -149,7 +123,6 @@ const ShippingAddressForm = () => {
       isDefault: false,
     });
     setShowAddForm(false);
-    setErrors({});
   };
 
   return (
@@ -239,39 +212,25 @@ const ShippingAddressForm = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block mb-2 text-sm font-medium">주소</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={addressData.address}
-                  onBlur={handleBlur}
-                  readOnly
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-                  placeholder="주소"
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-sm">{errors.address}</p>
-                )}
-              </div>
+              <InputForm
+                label="주소"
+                name="address"
+                value={addressData.address}
+                onChange={handleChange}
+                onBlur={handleError}
+                error={errors.address}
+                placeholder="주소"
+              />
 
-              <div>
-                <label className="block mb-2 text-sm font-medium">
-                  상세주소
-                </label>
-                <input
-                  type="text"
-                  name="detailAddress"
-                  value={addressData.detailAddress}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#FF7976]"
-                  placeholder="동/호수 입력"
-                />
-                {errors.detailAddress && (
-                  <p className="text-red-500 text-sm">{errors.detailAddress}</p>
-                )}
-              </div>
+              <InputForm
+                label="상세주소"
+                name="detailAddress"
+                value={addressData.detailAddress}
+                onChange={handleChange}
+                onBlur={handleError}
+                error={errors.detailAddress}
+                placeholder="상세주소"
+              />
 
               <div className="flex items-center">
                 <input
