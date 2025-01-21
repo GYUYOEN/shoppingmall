@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/auth/Login";
-import SignUpForm from "./pages/auth/SignUpForm";
-import ShippingAddressForm from "./pages/auth/ShippingAddressForm";
+import SignUp from "./pages/auth/SignUp";
+import Shipping from "./pages/auth/Shipping";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/shipping" element={<ShippingAddressForm />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/shipping" element={<Shipping />} />
       </Routes>
     </BrowserRouter>
   );

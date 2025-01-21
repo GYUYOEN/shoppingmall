@@ -1,10 +1,10 @@
-import SignUpDialog from "@/components/auth/SignUpDialog";
+import SignUpDialog from "@/components/signup/SignUpDialog";
 import { useState } from "react";
 
 import { InputForm } from "@/components/common/InputForm";
 import { useError } from "@/hooks/useError";
 
-const SignUpForm = () => {
+const SignUp = () => {
   const [formData, setFormData] = useState({
     id: "",
     email: "",
@@ -159,4 +159,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignUp;
