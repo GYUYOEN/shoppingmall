@@ -1,43 +1,40 @@
+import { useDispatch, useSelector } from "react-redux";
+
 import SignUpDialog from "@/components/signup/SignUpDialog";
-import { useState } from "react";
 
 import { InputForm } from "@/components/common/InputForm";
-import { useError } from "@/hooks/useError";
+import { setSignUpformData, setSignUpDialog } from "@/redux/signUpSlice";
+import { setFieldError } from "@/redux/inputErrorSlice";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    id: "",
-    email: "",
-    name: "",
-    password: "",
-    passwordConfirm: "",
-    phone: "",
-    gender: "",
-  });
-
-  const [showDialog, setShowDialog] = useState(false);
-  const { errors, handleError } = useError(formData);
+  const dispatch = useDispatch();
+  const { signUpForm, showSignUpDialog } = useSelector((state) => state.signUp);
+  const errors = useSelector((state) => state.error.errors);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "phone") {
       const onlyNumbers = value.replace(/[^0-9]/g, "");
 
-      setFormData({
-        ...formData,
-        [name]: onlyNumbers,
-      });
+      dispatch(setSignUpformData({ name, value: onlyNumbers }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      dispatch(setSignUpformData({ name, value }));
     }
+  };
+
+  const handleError = (e) => {
+    dispatch(
+      setFieldError({
+        field: e.target.name,
+        value: e.target.value,
+        formData: signUpForm,
+      })
+    );
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setShowDialog(true);
+    dispatch(setSignUpDialog(true));
   };
 
   return (
@@ -49,7 +46,7 @@ const SignUp = () => {
           <InputForm
             label="아이디"
             name="id"
-            value={formData.id}
+            value={signUpForm.id}
             onChange={handleChange}
             onBlur={handleError}
             error={errors.id}
@@ -60,7 +57,7 @@ const SignUp = () => {
             label="이메일"
             name="email"
             type="email"
-            value={formData.email}
+            value={signUpForm.email}
             onChange={handleChange}
             onBlur={handleError}
             error={errors.email}
@@ -70,7 +67,7 @@ const SignUp = () => {
           <InputForm
             label="이름"
             name="name"
-            value={formData.name}
+            value={signUpForm.name}
             onChange={handleChange}
             onBlur={handleError}
             error={errors.name}
@@ -81,7 +78,7 @@ const SignUp = () => {
             label="비밀번호"
             name="password"
             type="password"
-            value={formData.password}
+            value={signUpForm.password}
             onChange={handleChange}
             onBlur={handleError}
             error={errors.password}
@@ -92,7 +89,7 @@ const SignUp = () => {
             label="비밀번호 확인"
             name="passwordConfirm"
             type="password"
-            value={formData.passwordConfirm}
+            value={signUpForm.passwordConfirm}
             onChange={handleChange}
             onBlur={handleError}
             error={errors.passwordConfirm}
@@ -103,7 +100,7 @@ const SignUp = () => {
             label="전화번호"
             name="phone"
             type="tel"
-            value={formData.phone}
+            value={signUpForm.phone}
             onChange={handleChange}
             onBlur={handleError}
             maxLength={11}
@@ -120,7 +117,7 @@ const SignUp = () => {
                   type="radio"
                   name="gender"
                   value="male"
-                  checked={formData.gender === "male"}
+                  checked={signUpForm.gender === "male"}
                   onChange={handleChange}
                   onBlur={handleError}
                   className="mr-2"
@@ -132,7 +129,7 @@ const SignUp = () => {
                   type="radio"
                   name="gender"
                   value="female"
-                  checked={formData.gender === "female"}
+                  checked={signUpForm.gender === "female"}
                   onChange={handleChange}
                   onBlur={handleError}
                   className="mr-2"
@@ -154,7 +151,10 @@ const SignUp = () => {
         </form>
       </div>
 
-      <SignUpDialog open={showDialog} onOpenChange={setShowDialog} />
+      <SignUpDialog
+        open={showSignUpDialog}
+        onOpenChange={(open) => dispatch(setSignUpDialog(open))}
+      />
     </div>
   );
 };
