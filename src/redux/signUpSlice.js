@@ -9,6 +9,9 @@ const initialState = {
     passwordConfirm: "",
     phone: "",
     gender: "",
+    termsAgreed: false,
+    privacyAgreed: false,
+    marketingAgreed: false,
   },
   showSignUpDialog: false,
 };

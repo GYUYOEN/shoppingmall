@@ -142,6 +142,60 @@ const SignUp = () => {
             )}
           </div>
 
+          <div className="mb-4 space-y-2">
+            <label className="block mb-2 text-sm font-medium">약관 동의</label>
+            <div className="flex items-center font-medium">
+              <input
+                type="checkbox"
+                name="allAgreed"
+                checked={isAllChecked}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              <span className="text-sm">전체 동의</span>
+            </div>
+            <div className="ml-4 space-y-2">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="termsAgreed"
+                  checked={signUpForm.termsAgreed}
+                  onChange={handleChange}
+                  onBlur={handleError}
+                  className="mr-2"
+                />
+                <span className="text-sm">서비스 이용약관 동의 (필수)</span>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="privacyAgreed"
+                  checked={signUpForm.privacyAgreed}
+                  onChange={handleChange}
+                  onBlur={handleError}
+                  className="mr-2"
+                />
+                <span className="text-sm">
+                  개인정보 수집 및 이용 동의 (필수)
+                </span>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="marketingAgreed"
+                  checked={signUpForm.marketingAgreed}
+                  onChange={handleChange}
+                  onBlur={handleError}
+                  className="mr-2"
+                />
+                <span className="text-sm">마케팅 정보 수신 동의 (선택)</span>
+              </div>
+            </div>
+            {(errors.termsAgreed || errors.privacyAgreed) && (
+              <p className="text-red-500 text-sm">필수 약관에 동의해주세요.</p>
+            )}
+          </div>
+
           <button
             type="submit"
             className="w-full bg-[#FF7976] hover:bg-[#FF7976] text-white p-2 rounded transition-colors"
